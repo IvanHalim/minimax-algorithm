@@ -1,5 +1,5 @@
 ## TicTacToe with Minimax Algorithm
-This is a simple code that allows you to play a game of Tic-Tac-Toe or Five-In-A-Row against an AI opponent.
+This is a simple code that allows you to play a game of Tic-Tac-Toe or Five-In-A-Row against an AI opponent. However, the objective of this project is not the game itself but to gain a basic understanding of the minimax algorithm.
 
 ## Minimax
 Minimax is a decision-making algorithm, typically used in a turn-based, two player games. The goal of the algorithm is to find the optimal next move. In the algorithm, one player is called the maximizer, and the other player is a minimizer. If we assign an evaluation score to the game board, one player tries to choose a game state with the maximum score, while the other chooses a state with the minimum score.
