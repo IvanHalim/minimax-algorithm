@@ -1,7 +1,7 @@
 CXX = g++
-SRCS = main.cpp game.cpp
-HEADERS = game.hpp
-OBJS = main.o game.o
+SRCS = main.cpp game.cpp AI.cpp
+HEADERS = game.hpp AI.hpp
+OBJS = main.o game.o AI.o
 game: ${OBJS} ${HEADERS}
 	${CXX} ${OBJS} -o game
 ${OBJS}: ${SRCS}
