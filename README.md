@@ -14,3 +14,6 @@ To solve this, I implemented a heuristic algorithm that would give a good but no
 
 ## Limitation of Solution
 As I said previously, the heuristic algorithm is based on my personal understanding of the game and therefore not the absolute best solution out of all possible solutions. In other words, it will find only local optima and not the global optimum.
+
+## Alternative Solutions
+Some alternative solutions would be to use the alpha-beta pruning mechanism or to make the algorithm non-recursive to improve performance.
