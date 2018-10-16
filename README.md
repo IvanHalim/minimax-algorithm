@@ -10,10 +10,10 @@ In other words, the maximizer works to get the highest score, while the minimize
 While doing this project I find that the minimax algorithm works perfectly for a 3x3 Tic-Tac-Toe game. However, when playing the Five-In-A-Row game on a 10x10 board, the algorithm takes forever to find the optimal move because the number of possibilities is simply too high even for a computer.
 
 ## Solution
-To solve this, I implemented a heuristic algorithm that would give a good but not optimal solution in a reasonably short amount of time. This is done by creating a scoring system for the computer to use based on my understanding of the game.
+To solve this, I implemented a heuristic algorithm that would give a good but not optimal solution in a reasonably short amount of time. This is done by creating a scoring system and using if-statements to guide the computer in finding the best move.
 
 ## Limitation of Solution
-As I said previously, the heuristic algorithm is based on my personal understanding of the game and therefore not the absolute best solution out of all possible solutions. In other words, it will find only local optima and not the global optimum.
+The heuristic algorithm is based on my personal understanding of the game and therefore not the absolute best solution out of all possible solutions. In other words, it will find only local optima and not the global optimum.
 
 ## Alternative Solutions
 Some alternative solutions would be to use the alpha-beta pruning or to make the algorithm non-recursive to improve performance.
