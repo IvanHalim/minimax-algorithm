@@ -13,7 +13,7 @@ While doing this project I find that the minimax algorithm works perfectly for a
 To solve this, I use a strategy called "Weighted Squares". In this strategy, the evaluation function assign points to each square based on its position on the board. Central squares are weighted highly, because it can go in any direction, while edges and corners are assigned a low score because it is not as flexible.
 
 ## Limitation of Solution
-There are several problems with the "Weighted Squares" strategy. Firstly, this is not an accurate representation because the goal of the game is to form a connected line regardless of its position on the board. Secondly, sometimes the best move in a position is to make a move on a square that has a low score, the computer is unable to detect this. Thirdly, the computer does not consider the positional arrangement of the pieces and therefore often makes a dubious move simply because the square has a high score.
+There are several problems with the "Weighted Squares" strategy. Firstly, this is not an accurate representation because the goal of the game is to form a connected line regardless of its position on the board. Secondly, sometimes the best move in a position is to make a move on a square that has a low score, the computer is unable to detect this exception. Thirdly, the computer does not consider the positional arrangement of the pieces and therefore often makes a dubious move simply because the square has a high score.
 
 ## Alternative Solutions
 An alternative solution would be to use the alpha-beta pruning to decrease the number of nodes that are evaluated by the minimax algorithm. Another solution is to modify the evaluation function so as to handle exception cases.
