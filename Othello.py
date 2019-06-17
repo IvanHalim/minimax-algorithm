@@ -23,9 +23,13 @@ SQUARE_WEIGHTS = [
 MAX_VALUE = float('inf')
 MIN_VALUE = float('-inf')
 
-ply_boards = [initial_board() for _ in range(40)]
-
 move_number = 1 # The number of the move to be played
+
+# Load data from file
+def load_data(filename):
+    with open(filename) as f:
+        dataset = [int(x) for x in next(f).split()]
+    return dataset
 
 # Array of values for edge positions
 edge_table = load_data('edge_table.txt')
@@ -35,15 +39,6 @@ edge_and_x_lists = [[22, 11, 12, 13, 14, 15, 16, 17, 18, 27],
                     [72, 81, 82, 83, 84, 85, 86, 87, 88, 77],
                     [22, 11, 21, 31, 41, 51, 61, 71, 81, 72],
                     [27, 18, 28, 38, 48, 58, 68, 78, 88, 77]]
-
-class IllegalMoveError(Exception):
-    def __init__(self, player, move, board):
-        self.player = player
-        self.move = move
-        self.board = board
-        
-    def __str__(self):
-        return '{0} cannot move to square {1}'.format(PLAYERS[self.player], self.move)
 
 def squares():
     """
@@ -61,6 +56,17 @@ def initial_board():
     board[44], board[45] = WHITE, BLACK
     board[54], board[55] = BLACK, WHITE
     return board
+
+ply_boards = [initial_board() for _ in range(40)]
+
+class IllegalMoveError(Exception):
+    def __init__(self, player, move, board):
+        self.player = player
+        self.move = move
+        self.board = board
+        
+    def __str__(self):
+        return '{0} cannot move to square {1}'.format(PLAYERS[self.player], self.move)
 
 def print_board(board):
     """Get a string representation of the board."""
@@ -253,12 +259,6 @@ def mobility(player, board):
                 potential += 1
     return current, (current + potential)
 
-# Load data from file
-def load_data(filename):
-    with open(filename) as f:
-        dataset = [int(x) for x in next(f).split()]
-    return dataset
-
 def edge_index(player, board, squares):
     """The index counts 1 for player; 2 for opponent,
     on each square -- summed as a base 3 number."""
@@ -304,3 +304,13 @@ def Iago_eval(player, board):
 def Iago(depth):
     """Use an approximation of Iago's evaluation function."""
     return alphabeta_searcher3(depth, Iago_eval)
+
+def user_input(player, board):
+    """Get input move from user"""
+    print()
+    print(print_board(board))
+    move = input('{0} to move: '.format(PLAYERS[player]))
+    return int(move)
+
+if __name__ == '__main__':
+    play(user_input, Iago(3))
