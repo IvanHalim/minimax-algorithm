@@ -291,8 +291,10 @@ def mobility(player, board):
     return current, (current + potential)
 
 def edge_index(player, board, squares):
-    """The index counts 1 for player; 2 for opponent,
-    on each square -- summed as a base 3 number."""
+    """
+    The index counts 1 for player; 2 for opponent,
+    on each square -- summed as a base 3 number.
+    """
     opp = opponent(player)
     index = 0
     for sq in squares:
