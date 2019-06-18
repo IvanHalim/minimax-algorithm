@@ -576,3 +576,5 @@ if __name__ == '__main__':
         print('Black Wins!')
     else:
         print('White Wins!')
+    
+    input()
