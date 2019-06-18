@@ -310,7 +310,11 @@ def user_input(player, board):
     """Get input move from user"""
     print()
     print(print_board(board))
-    move = input('{0} to move: '.format(PLAYERS[player]))
+    valid_input = [str(x) for x in legal_moves(player, board)]
+
+    move = ''
+    while move not in valid_input:
+        move = input('{0} to move: '.format(PLAYERS[player]))
     return int(move)
 
 if __name__ == '__main__':
@@ -339,7 +343,13 @@ if __name__ == '__main__':
     print()
     print(print_board(board))
     print('Black: {0}'.format(black))
-    print('White: {0}'.format(white))
+    print('White: {0}\n'.format(white))
+
+    if abs(score) == 64:
+        print('FLAWLESS VICTORY')
+    if abs(score) >= 20:
+        print('FATALITY')
+
     if score == 0:
         print('Draw!')
     elif score > 0:
