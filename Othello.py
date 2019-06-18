@@ -316,7 +316,19 @@ def user_input(player, board):
 if __name__ == '__main__':
 
     print(print_board(initial_board()))
-    player = int(input('Do you want to play as BLACK (@) or WHITE (o)? '))
+
+    valid_input = ['BLACK', 'WHITE', '1', '2', '@', 'O']
+    player = ''
+    while player not in valid_input:
+        player = input('Do you want to play as BLACK (@) or WHITE (o)? ').upper()
+
+    if player == 'BLACK' or player == '@':
+        player = 1
+    elif player == 'WHITE' or player == 'O':
+        player = 2
+    else:
+        player = int(player)
+
     if player == 1:
         board, score = play(user_input, Iago(3))
     else:
