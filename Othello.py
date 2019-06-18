@@ -204,17 +204,27 @@ def alphabeta3(player, board, alpha, beta, depth, evaluate, killer):
     """
     Alphabeta search, putting killer move first.
     """
+    # When depth is zero, don't examine possible moves. Just determine the value
+    # of this board to the player.
     if depth == 0:
         return evaluate(player, board), None
     
     def value(board, alpha, beta, killer):
+        # The value of a board is the opposite of its value to the opponent.
         val, reply = alphabeta3(opponent(player), board, -beta, -alpha, depth-1, evaluate, killer)
         return -val, reply
     
+    # We want to evaluate all the legal moves by considering their implications
+    # `depth` turns in advance. First, find all the legal moves. Putting the
+    # killer move in front of the list.
     moves = put_first(killer, legal_moves(player, board))
+
+    # If player has no legal moves, then either:
     if not moves:
+        # the game is over, so the best achievable score is victory or defeat
         if not any_legal_move(opponent(player), board):
             return final_value(player, board), None
+        # or we have to pass this turn, so just find the value of this board.
         return value(board, alpha, beta, None)[0], None
     
     best_move = moves[0]
