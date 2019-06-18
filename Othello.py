@@ -215,7 +215,7 @@ def alphabeta3(player, board, alpha, beta, depth, evaluate, killer):
         return -val, reply
     
     # We want to evaluate all the legal moves by considering their implications
-    # `depth` turns in advance. First, find all the legal moves. Putting the
+    # `depth` turns in advance. First, find all the legal moves, putting the
     # killer move in front of the list.
     moves = put_first(killer, legal_moves(player, board))
 
