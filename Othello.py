@@ -577,4 +577,4 @@ if __name__ == '__main__':
     else:
         print('White Wins!')
     
-    input()
+    input('Press [enter] to continue . . . ')
