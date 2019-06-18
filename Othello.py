@@ -472,6 +472,7 @@ def create_edge_table():
         print('\'edge_table.txt\' created')
     else:
         edge_table[:] = load_data('edge_table.txt')
+        print('\'edge_table.txt\' loaded')
 
 def Iago_eval(player, board):
     """
