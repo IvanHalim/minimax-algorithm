@@ -133,6 +133,7 @@ def play(black_strategy, white_strategy):
     board = initial_board()
     player = BLACK
     strategy = lambda who: black_strategy if who == BLACK else white_strategy
+    global move_number
     move_number = 1
     while player is not None:
         move = get_move(strategy(player), player, board)
