@@ -311,7 +311,6 @@ def user_input(player, board):
     print()
     print(print_board(board))
     valid_input = [str(x) for x in legal_moves(player, board)]
-
     move = ''
     while move not in valid_input:
         move = input('{0} to move: '.format(PLAYERS[player]))
@@ -340,6 +339,7 @@ if __name__ == '__main__':
 
     black = int((64 + score) / 2)
     white = 64 - black
+
     print()
     print(print_board(board))
     print('Black: {0}'.format(black))
