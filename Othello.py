@@ -579,8 +579,8 @@ if __name__ == '__main__':
         print('White Wins!')
 
     if (score > 0 and player == 1) or (score < 0 and player == 2):
-        print('Well played!\n')
+        print('Well played!')
     elif score != 0:
-        print('Better luck next time\n')
+        print('Better luck next time')
     
-    input('Press [enter] to continue . . . ')
+    input('\nPress [enter] to continue . . . ')
