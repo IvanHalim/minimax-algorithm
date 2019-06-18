@@ -314,4 +314,23 @@ def user_input(player, board):
     return int(move)
 
 if __name__ == '__main__':
-    play(user_input, Iago(3))
+
+    print(print_board(initial_board()))
+    player = int(input('Do you want to play as BLACK (@) or WHITE (o)? '))
+    if player == 1:
+        board, score = play(user_input, Iago(3))
+    else:
+        board, score = play(Iago(3), user_input)
+
+    black = int((64 + score) / 2)
+    white = 64 - black
+    print()
+    print(print_board(board))
+    print('Black: {0}'.format(black))
+    print('White: {0}'.format(white))
+    if score == 0:
+        print('Draw!')
+    elif score > 0:
+        print('Black Wins!')
+    else:
+        print('White Wins!')
