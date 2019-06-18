@@ -1,13 +1,17 @@
 import os
 
+# The outside edge is marked ?, empty squares are ., black is @, and white is o.
+# The black and white pieces represent the two players.
 EMPTY, BLACK, WHITE, OUTER = '.', '@', 'o', '?'
 PIECES = (EMPTY, BLACK, WHITE, OUTER)
 PLAYERS = {BLACK: 'Black', WHITE: 'White'}
 
+# To refer to neighbor squares we can add a direction to a square.
 UP, DOWN, LEFT, RIGHT = -10, 10, -1, 1
 UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT = -9, 11, 9, -11
 DIRECTIONS = (UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT)
 
+# A list of square weights to be used for move ordering
 SQUARE_WEIGHTS = [
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
     0, 120, -20,  20,   5,   5,  20, -20, 120,   0,
@@ -25,18 +29,22 @@ SQUARE_WEIGHTS = [
 MAX_VALUE = float('inf')
 MIN_VALUE = float('-inf')
 
-move_number = 1 # The number of the move to be played
+# The number of the move to be played
+move_number = 1
 
 # Array of values for edge positions
 edge_table = [0 for _ in range(3**10)]
 
-# The four edges (with their X-squares)/
+# The four edges (with their X-squares)
 edge_and_x_lists = [[22, 11, 12, 13, 14, 15, 16, 17, 18, 27],
                     [72, 81, 82, 83, 84, 85, 86, 87, 88, 77],
                     [22, 11, 21, 31, 41, 51, 61, 71, 81, 72],
                     [27, 18, 28, 38, 48, 58, 68, 78, 88, 77]]
 
+# The top edge is the first edge in the edge_and_x_lists
 top_edge = edge_and_x_lists[0]
+
+# Corner and X-squares
 corner_xsqs = [(11, 22), (18, 27), (81, 72), (88, 77)]
 
 #                     stab  semi  un
@@ -68,6 +76,7 @@ def initial_board():
     board[54], board[55] = BLACK, WHITE
     return board
 
+# A vector of boards to be used and reused
 ply_boards = [initial_board() for _ in range(40)]
 
 class IllegalMoveError(Exception):
