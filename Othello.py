@@ -557,7 +557,7 @@ if __name__ == '__main__':
     else:
         board, score = play(Iago(3), user_input)
 
-    total = len(x for x in board if x != EMPTY and x != OUTER)
+    total = len([sq for sq in squares() if sq != EMPTY])
     black = int((total + score) / 2)
     white = total - black
 
