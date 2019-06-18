@@ -450,21 +450,22 @@ def piece_stability(board, sq):
         else:
             return stable
 
-
-# Save data into a file
 def save_data(filename, data):
+    """Save data into a file."""
     with open(filename, 'w') as f:
         f.write(' '.join(str(x) for x in data))
 
-# Load data from file
 def load_data(filename):
+    """Load data from file."""
     with open(filename) as f:
         dataset = [int(x) for x in next(f).split()]
     return dataset
 
-# Create edge_table.txt if it doesn't exist
-# Otherwise load data from edge_table.txt
 def create_edge_table():
+    """
+    Create edge_table.txt if it doesn't exist.
+    Otherwise load data from edge_table.txt.
+    """
     if not os.path.exists('edge_table.txt'):
         print('Creating \'edge_table.txt\'...')
         init_edge_table()
