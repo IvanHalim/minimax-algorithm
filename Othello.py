@@ -1,3 +1,5 @@
+import os
+
 EMPTY, BLACK, WHITE, OUTER = '.', '@', 'o', '?'
 PIECES = (EMPTY, BLACK, WHITE, OUTER)
 PLAYERS = {BLACK: 'Black', WHITE: 'White'}
@@ -25,20 +27,29 @@ MIN_VALUE = float('-inf')
 
 move_number = 1 # The number of the move to be played
 
-# Load data from file
-def load_data(filename):
-    with open(filename) as f:
-        dataset = [int(x) for x in next(f).split()]
-    return dataset
-
 # Array of values for edge positions
-edge_table = load_data('edge_table.txt')
+edge_table = [0 for _ in range(3**10)]
 
 # The four edges (with their X-squares)/
 edge_and_x_lists = [[22, 11, 12, 13, 14, 15, 16, 17, 18, 27],
                     [72, 81, 82, 83, 84, 85, 86, 87, 88, 77],
                     [22, 11, 21, 31, 41, 51, 61, 71, 81, 72],
                     [27, 18, 28, 38, 48, 58, 68, 78, 88, 77]]
+
+top_edge = edge_and_x_lists[0]
+corner_xsqs = [(11, 22), (18, 27), (81, 72), (88, 77)]
+
+#                     stab  semi  un
+static_edge_table = [[None, 0, -2000],  # X
+                     [700, None, None], # corner
+                     [1200, 200, -25],  # C
+                     [1000, 200, 75],   # A
+                     [1000, 200, 50],   # B
+                     [1000, 200, 50],   # B
+                     [1000, 200, 75],   # A
+                     [1200, 200, -25],  # C
+                     [700, None, None], # corner
+                     [None, 0, -2000]]  # X
 
 def squares():
     """
@@ -278,6 +289,190 @@ def edge_stability(player, board):
     score = sum(edge_table[edge_index(player, board, edge)] for edge in edge_and_x_lists)
     return score
 
+def init_edge_table():
+    """Initialize `edge_table`, starting from the empty board."""
+    # Initialize the static values
+    for n_pieces in range(11):
+        def fn(board, index):
+            edge_table[index] = static_edge_stability(BLACK, board)
+        map_edge_n_pieces(fn, BLACK, initial_board(), n_pieces, top_edge, 0)
+    # Now iterate five times trying to improve
+    for _ in range(5):
+        for n_pieces in range(9, 0, -1):
+            def fn(board, index):
+                edge_table[index] = possible_edge_moves_value(BLACK, board, index)
+            map_edge_n_pieces(fn, BLACK, initial_board(), n_pieces, top_edge, 0)
+
+def map_edge_n_pieces(fn, player, board, n, squares, index):
+    """
+    Call fn on all edges with n pieces.
+    Index counts 1 for player, 2 for opponent
+    """
+    if len(squares) < n:
+        return
+    elif not squares:
+        fn(board, index)
+    else:
+        index3 = index * 3
+        sq = squares[0]
+        map_edge_n_pieces(fn, player, board, n, squares[1:], index3)
+        if n > 0 and board[sq] == EMPTY:
+            board[sq] = player
+            map_edge_n_pieces(fn, player, board, n-1, squares[1:], index3+1)
+            board[sq] = opponent(player)
+            map_edge_n_pieces(fn, player, board, n-1, squares[1:], index3+2)
+            board[sq] = EMPTY
+
+def possible_edge_moves_value(player, board, index):
+    """
+    Consider all possible edge moves.
+    Combine their values into a single number.
+    """
+    x = [(1.0, edge_table[index])]
+    y = [possible_edge_move(player, board, sq) for sq in top_edge if board[sq] == EMPTY]
+    possibilities = x + y
+    return combine_edge_moves(possibilities, player)
+
+def possible_edge_move(player, board, sq):
+    """Return a (prob, val) pair for a possible edge move."""
+    num_player = 1 if player == BLACK else 2
+    new_board = replace(ply_boards[num_player], board)
+    make_move(sq, player, new_board)
+    prob = edge_move_probability(player, board, sq)
+    val = -edge_table[edge_index(opponent(player), new_board, top_edge)]
+    return (prob, val)
+
+def combine_edge_moves(possibilities, player):
+    """Combine the best moves."""
+    prob = 1.0
+    val = 0.0
+    fn = True if player == BLACK else False
+    for pair in sorted(possibilities, key=lambda x: x[1], reverse=fn):
+        if prob < 0.0:
+            break
+        val += prob * pair[0] * pair[1]
+        prob -= prob * pair[0]
+    return round(val)
+
+def corner_p(sq):
+    """Return the tuple which contains the corner square"""
+    return next((x for x in corner_xsqs if x[0] == sq), None)
+
+def x_square_p(sq):
+    """Return the tuple which contains the x-square"""
+    return next((x for x in corner_xsqs if x[1] == sq), None)
+
+def x_square_for(corner):
+    """Return the x-square for a corner square"""
+    tuple = [x for x in corner_xsqs if x[0] == corner]
+    return tuple[0][1] if tuple else None
+
+def corner_for(xsq):
+    """Return the corner square for an x-square"""
+    tuple = [x for x in corner_xsqs if x[1] == xsq]
+    return tuple[0][0] if tuple else None
+
+def edge_move_probability(player, board, square):
+    """What's the probability that player can move to this square?"""
+    # X-squares
+    if x_square_p(square):
+        return 0.5
+    # Immediate capture
+    elif is_legal(square, player, board):
+        return 1.0
+    # Move to corner depends on X-square
+    elif corner_p(square):
+        x_square = x_square_for(square)
+        if board[x_square] == EMPTY:
+            return 0.1
+        elif board[x_square] == player:
+            return 0.001
+        else:
+            return 0.9
+    else:
+        val = [[.1, .4, .7],
+               [.05, .3, None],
+               [.01, None, None]]
+        x = count_edge_neighbors(player, board, square)
+        y = count_edge_neighbors(opponent(player), board, square)
+        if is_legal(square, opponent(player), board):
+            return val[x][y]/2
+        else:
+            return val[x][y]
+        
+def count_edge_neighbors(player, board, square):
+    """Count the neighbors of this square occupied by player."""
+    inc = [1, -1]
+    neighbors = [board[square+i] for i in inc]
+    return sum(1 for x in neighbors if x == player)
+
+def static_edge_stability(player, board):
+    """Compute this edge's static stability."""
+    score = 0
+    for i in range(len(top_edge)):
+        sq = top_edge[i]
+        if board[sq] == EMPTY:
+            score += 0
+        elif board[sq] == player:
+            score += static_edge_table[i][piece_stability(board, sq)]
+        else:
+            score -= static_edge_table[i][piece_stability(board, sq)]
+    return score
+
+def piece_stability(board, sq):
+    """Evaluate whether a square is stable, unstable or semi-stable"""
+    stable, semi_stable, unstable = 0, 1, 2
+    if corner_p(sq):
+        return stable
+    elif x_square_p(sq):
+        if board[corner_for(sq)] == EMPTY:
+            return unstable
+        else:
+            return semi_stable
+    else:
+        player = board[sq]
+        opp = opponent(player)
+        p1 = next(p for p in board[sq:20] if p != player)
+        p2 = next(p for p in board[sq-1:9:-1] if p != player)
+        
+        # Unstable pieces can be captured immediately
+        # by playing in the empty square
+        if (p1 == EMPTY and p2 == opp) or (p2 == EMPTY and p1 == opp):
+            return unstable
+        
+        # Semi-stable pieces might be captured
+        elif p1 == opp and p2 == opp and next((p for p in board[11:19] if p == EMPTY), None):
+            return semi_stable
+        elif p1 == EMPTY and p2 == EMPTY:
+            return semi_stable
+        
+        # Stable pieces can never be captured
+        else:
+            return stable
+
+
+# Save data into a file
+def save_data(filename, data):
+    with open(filename, 'w') as f:
+        f.write(' '.join(str(x) for x in data))
+
+# Load data from file
+def load_data(filename):
+    with open(filename) as f:
+        dataset = [int(x) for x in next(f).split()]
+    return dataset
+
+# Create edge_table.txt if it doesn't exist
+# Otherwise load data from edge_table.txt
+def create_edge_table():
+    if not os.path.exists('edge_table.txt'):
+        print('Creating \'edge_table.txt\'...')
+        init_edge_table()
+        save_data('edge_table.txt', edge_table)
+        print('\'edge_table.txt\' created')
+    else:
+        edge_table[:] = load_data('edge_table.txt')
+
 def Iago_eval(player, board):
     """
     Combine edge stability, current mobility and
@@ -318,8 +513,10 @@ def user_input(player, board):
 
 if __name__ == '__main__':
 
-    print(print_board(initial_board()))
+    create_edge_table()
 
+    print()
+    print(print_board(initial_board()))
     valid_input = ['BLACK', 'WHITE', '1', '2', '@', 'O']
     player = ''
     while player not in valid_input:
