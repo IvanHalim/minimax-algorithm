@@ -536,7 +536,15 @@ def user_input(player, board):
     return int(move)
 
 def win_message():
-    message = ['Well done!', 'Outstanding!', 'Impressive!', 'Excellent!', 'Superb!', 'Hurrah!', 'INCREDIBILIS!!!']
+    message = ['Well done!',
+               'Outstanding!',
+               'Impressive!',
+               'Excellent!',
+               'Superb!',
+               'Hurrah!',
+               'INCREDIBILIS!!!',
+               'VI VON ZULUL',
+               'He knows da wae']
     return random.choice(message)
 
 def lose_message():
@@ -548,7 +556,10 @@ def lose_message():
                'All too easy!',
                'Your soul is mine!',
                'It\'s official. You suck!',
-               'SHAMEFUR DISPRAY!']
+               'SHAMEFUR DISPRAY!',
+               'VI LOST ZULUL',
+               'PepeHands',
+               'He doesn\'t know PepeLaugh']
     return random.choice(message)
 
 if __name__ == '__main__':
