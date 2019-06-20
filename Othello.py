@@ -541,6 +541,7 @@ def win_message():
 
 def lose_message():
     message = ['Feel the wrath of Shao Kahn!',
+               'Feel the power of TOASTY!',
                'That was pathetic!',
                'You weak pathetic fool!',
                'Is that your best?',
