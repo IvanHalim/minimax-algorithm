@@ -536,11 +536,12 @@ def user_input(player, board):
     return int(move)
 
 def win_message():
-    message = ['Well done!', 'Outstanding!', 'Impressive!', 'Excellent!', 'Superb!']
+    message = ['Well done!', 'Outstanding!', 'Impressive!', 'Excellent!', 'Superb!', 'INCREDIBILIS!!!']
     return random.choice(message)
 
 def lose_message():
-    message = ['That was pathetic!',
+    message = ['Feel the wrath of Shao Kahn!',
+               'That was pathetic!',
                'You weak pathetic fool!',
                'Is that your best?',
                'All too easy!',
