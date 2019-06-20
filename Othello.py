@@ -562,7 +562,10 @@ def lose_message():
                'PepeHands',
                'He doesn\'t know PepeLaugh',
                'Just win looool 4Head',
-               'Weebs DansGame']
+               'Weebs DansGame',
+               'Never lucky BabyRage',
+               'P R OMEGALUL',
+               'All your base are belong to us']
     return random.choice(message)
 
 if __name__ == '__main__':
