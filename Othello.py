@@ -544,7 +544,8 @@ def win_message():
                'Hurrah!',
                'INCREDIBILIS!!!',
                'VI VON ZULUL',
-               'He knows da wae']
+               'He knows da wae',
+               'I\'m reporting your for cheating!']
     return random.choice(message)
 
 def lose_message():
@@ -559,7 +560,9 @@ def lose_message():
                'SHAMEFUR DISPRAY!',
                'VI LOST ZULUL',
                'PepeHands',
-               'He doesn\'t know PepeLaugh']
+               'He doesn\'t know PepeLaugh',
+               'Just win looool 4Head',
+               'Weebs DansGame']
     return random.choice(message)
 
 if __name__ == '__main__':
