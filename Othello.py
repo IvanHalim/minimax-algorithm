@@ -544,7 +544,8 @@ def lose_message():
                'You weak pathetic fool!',
                'Is that your best?',
                'All too easy!',
-               'Your soul is mine!']
+               'Your soul is mine!',
+               'It\'s official. You suck!']
     return random.choice(message)
 
 if __name__ == '__main__':
