@@ -1,4 +1,5 @@
 import os
+import random
 
 # The outside edge is marked ?, empty squares are ., black is @, and white is o.
 # The black and white pieces represent the two players.
@@ -534,6 +535,18 @@ def user_input(player, board):
         move = input('{0} to move: '.format(PLAYERS[player]))
     return int(move)
 
+def win_message():
+    message = ['Well done!', 'Outstanding!', 'Impressive!', 'Excellent!', 'Superb!']
+    return random.choice(message)
+
+def lose_message():
+    message = ['That was pathetic!',
+               'You weak pathetic fool!',
+               'Is that your best?',
+               'All too easy!',
+               'Your soul is mine!']
+    return random.choice(message)
+
 if __name__ == '__main__':
 
     create_edge_table()
@@ -579,8 +592,8 @@ if __name__ == '__main__':
         print('White Wins!')
 
     if (score > 0 and player == 1) or (score < 0 and player == 2):
-        print('Well played!')
+        print(win_message())
     elif score != 0:
-        print('Better luck next time')
+        print(lose_message())
     
     input('\nPress [enter] to continue . . . ')
