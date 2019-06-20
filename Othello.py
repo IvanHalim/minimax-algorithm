@@ -566,7 +566,7 @@ if __name__ == '__main__':
     print('Black: {0}'.format(black))
     print('White: {0}\n'.format(white))
 
-    if abs(score) == 64:
+    if abs(score) == total:
         print('FLAWLESS VICTORY')
     if abs(score) >= 20:
         print('FATALITY')
