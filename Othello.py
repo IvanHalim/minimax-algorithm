@@ -315,15 +315,15 @@ def init_edge_table():
     """Initialize `edge_table`, starting from the empty board."""
     # Initialize the static values
     for n_pieces in range(11):
-        def fn(board, index):
+        def fn1(board, index):
             edge_table[index] = static_edge_stability(BLACK, board)
-        map_edge_n_pieces(fn, BLACK, initial_board(), n_pieces, top_edge, 0)
+        map_edge_n_pieces(fn1, BLACK, initial_board(), n_pieces, top_edge, 0)
     # Now iterate five times trying to improve
     for _ in range(5):
         for n_pieces in range(9, 0, -1):
-            def fn(board, index):
+            def fn2(board, index):
                 edge_table[index] = possible_edge_moves_value(BLACK, board, index)
-            map_edge_n_pieces(fn, BLACK, initial_board(), n_pieces, top_edge, 0)
+            map_edge_n_pieces(fn2, BLACK, initial_board(), n_pieces, top_edge, 0)
 
 def map_edge_n_pieces(fn, player, board, n, squares, index):
     """
@@ -545,7 +545,8 @@ def win_message():
                'INCREDIBILIS!!!',
                'VI VON ZULUL',
                'He knows da wae',
-               'I\'m reporting your for cheating!']
+               'I\'m reporting your for cheating!',
+               'NANI!?']
     return random.choice(message)
 
 def lose_message():
@@ -555,6 +556,8 @@ def lose_message():
                'You weak pathetic fool!',
                'Is that your best?',
                'All too easy!',
+               'You\'re still trying to win?',
+               'Game Over!',
                'Your soul is mine!',
                'It\'s official. You suck!',
                'SHAMEFUR DISPRAY!',
@@ -566,7 +569,9 @@ def lose_message():
                'Never lucky BabyRage',
                'P R OMEGALUL',
                'All your base are belong to us',
-               'SO BAD LULW SO MAD LULW']
+               'SO BAD LULW SO MAD LULW',
+               'Jebaited!',
+               'Omae wa mou shindeiru']
     return random.choice(message)
 
 if __name__ == '__main__':
