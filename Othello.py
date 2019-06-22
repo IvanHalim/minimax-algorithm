@@ -572,6 +572,7 @@ def lose_message():
                'P R OMEGALUL',
                'All your base are belong to us',
                'SO BAD LULW SO MAD LULW',
+               'It’s only a game. Why you heff to be mad?',
                'Stop it. Get some help.',
                'Jebaited!',
                'Omae wa mou shindeiru']
