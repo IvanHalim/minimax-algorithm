@@ -543,6 +543,7 @@ def win_message():
                'Superb!',
                'Hurrah!',
                'Noice.',
+               'PagChomp',
                'INCREDIBILIS!!!',
                'VI VON ZULUL',
                'He knows da wae',
