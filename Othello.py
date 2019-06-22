@@ -542,6 +542,7 @@ def win_message():
                'Excellent!',
                'Superb!',
                'Hurrah!',
+               'Noice.',
                'INCREDIBILIS!!!',
                'VI VON ZULUL',
                'He knows da wae',
