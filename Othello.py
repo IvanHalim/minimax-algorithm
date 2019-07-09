@@ -575,7 +575,9 @@ def lose_message():
                'It’s only a game. Why you heff to be mad?',
                'Stop it. Get some help.',
                'Jebaited!',
-               'Omae wa mou shindeiru']
+               'Omae wa mou shindeiru',
+               'What a grand and intoxicating innocence!',
+               'Shame on you, sweet Nerevar...']
     return random.choice(message)
 
 if __name__ == '__main__':
