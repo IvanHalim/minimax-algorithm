@@ -201,7 +201,7 @@ def final_value(player, board):
         return MAX_VALUE
     return diff
 
-def alphabeta3(player, board, alpha, beta, depth, evaluate, killer):
+def alphabeta(player, board, alpha, beta, depth, evaluate, killer):
     """
     Alphabeta search, putting killer move first.
     """
@@ -212,7 +212,7 @@ def alphabeta3(player, board, alpha, beta, depth, evaluate, killer):
     
     def value(board, alpha, beta, killer):
         # The value of a board is the opposite of its value to the opponent.
-        val, reply = alphabeta3(opponent(player), board, -beta, -alpha, depth-1, evaluate, killer)
+        val, reply = alphabeta(opponent(player), board, -beta, -alpha, depth-1, evaluate, killer)
         return -val, reply
     
     # We want to evaluate all the legal moves by considering their implications
@@ -263,11 +263,16 @@ def replace(seq1, seq2):
     """Copies one sequence into another"""
     seq1[:] = seq2
     return seq1
-    
-def alphabeta_searcher3(depth, evaluate):
-    """Return a strategy that does Alphabeta search with killer moves"""
+
+def alphabeta_iterative(max_depth, evaluate):
+    """Return a strategy that does Alphabeta search with iterative deepening"""
     def strategy(player, board):
-        return alphabeta3(player, board, MIN_VALUE, MAX_VALUE, depth, evaluate, None)[1]
+        depth = 1
+        killer = None
+        while depth <= max_depth:
+            killer = alphabeta(player, board, MIN_VALUE, MAX_VALUE, depth, evaluate, killer)[1]
+            depth += 1
+        return killer
     return strategy
 
 def adj(square):
@@ -523,7 +528,7 @@ def Iago_eval(player, board):
 
 def Iago(depth):
     """Use an approximation of Iago's evaluation function."""
-    return alphabeta_searcher3(depth, Iago_eval)
+    return alphabeta_iterative(depth, Iago_eval)
 
 def user_input(player, board):
     """Get input move from user"""
@@ -599,9 +604,9 @@ if __name__ == '__main__':
         player = int(player)
 
     if player == 1:
-        board, score = play(user_input, Iago(3))
+        board, score = play(user_input, Iago(4))
     else:
-        board, score = play(Iago(3), user_input)
+        board, score = play(Iago(4), user_input)
 
     total = len([sq for sq in squares() if sq != EMPTY])
     black = int((total + score) / 2)
