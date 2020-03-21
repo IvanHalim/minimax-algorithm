@@ -267,7 +267,7 @@ def replace(seq1, seq2):
 def alphabeta_iterative(max_depth, evaluate):
     """Return a strategy that does Alphabeta search with iterative deepening"""
     def strategy(player, board):
-        depth = 1
+        depth = 0
         killer = None
         while depth <= max_depth:
             killer = alphabeta(player, board, MIN_VALUE, MAX_VALUE, depth, evaluate, killer)[1]
