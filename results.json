@@ -1,0 +1,112 @@
+{
+  "python": "3.12.14",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "rules_positions": 1220,
+  "child_boards": 19465,
+  "pass_positions": 8,
+  "early_terminal_games": 0,
+  "mobility_evaluation_cases": 244,
+  "search_cases": 99,
+  "edge_patterns": 59049,
+  "edge_stability_cases": 393660,
+  "opening_eval_call_counts": {
+    "legal_moves": 120,
+    "squares": 122,
+    "is_legal": 7680
+  },
+  "benchmark": [
+    {
+      "position": "opening",
+      "depth": 3,
+      "original": {
+        "seconds": 0.6885585319996608,
+        "move": 34,
+        "leaf_evaluations": 58
+      },
+      "optimized": {
+        "seconds": 0.01740015100040182,
+        "move": 34,
+        "leaf_evaluations": 58
+      },
+      "speedup": 39.5719860122915
+    },
+    {
+      "position": "opening",
+      "depth": 4,
+      "original": {
+        "seconds": 1.7083373149998806,
+        "move": 34,
+        "leaf_evaluations": 157
+      },
+      "optimized": {
+        "seconds": 0.0544053650000933,
+        "move": 34,
+        "leaf_evaluations": 157
+      },
+      "speedup": 31.400162741247136
+    },
+    {
+      "position": "opening",
+      "depth": 5,
+      "original": {
+        "seconds": 5.818108045999907,
+        "move": 34,
+        "leaf_evaluations": 584
+      },
+      "optimized": {
+        "seconds": 0.1537220909995085,
+        "move": 34,
+        "leaf_evaluations": 584
+      },
+      "speedup": 37.84822342820271
+    },
+    {
+      "position": "seed0_after24moves",
+      "depth": 3,
+      "original": {
+        "seconds": 1.4246111440006644,
+        "move": 63,
+        "leaf_evaluations": 373
+      },
+      "optimized": {
+        "seconds": 0.050281630999961635,
+        "move": 63,
+        "leaf_evaluations": 373
+      },
+      "speedup": 28.332635908364853
+    },
+    {
+      "position": "seed0_after24moves",
+      "depth": 4,
+      "original": {
+        "seconds": 3.546689953999703,
+        "move": 63,
+        "leaf_evaluations": 971
+      },
+      "optimized": {
+        "seconds": 0.14475182000023779,
+        "move": 63,
+        "leaf_evaluations": 971
+      },
+      "speedup": 24.501867776127973
+    },
+    {
+      "position": "seed0_after24moves",
+      "depth": 5,
+      "original": {
+        "seconds": 22.554551836999963,
+        "move": 67,
+        "leaf_evaluations": 6756
+      },
+      "optimized": {
+        "seconds": 0.8990098879994548,
+        "move": 67,
+        "leaf_evaluations": 6756
+      },
+      "speedup": 25.088213308966008
+    }
+  ],
+  "benchmark_midgame_board": "???????????........??..o.....??..ooo.o.??@.oo@@@@??@@oo@o@.??@..o@@..??..oo@o..??...o....???????????",
+  "benchmark_midgame_player": "@",
+  "total_seconds": 44.579768307999984
+}
