@@ -169,11 +169,12 @@ class EngineTests(unittest.TestCase):
                     and isinstance(node.test, ast.Compare)
                     and isinstance(node.test.left, ast.Name) and node.test.left.id == '__name__')
         scope = game.__dict__.copy()
-        answers = iter(['BLACK', ''])
+        answers = iter(['', '', 'BLACK', ''])
         scope.update(play=lambda *args: (list(board), -13),
-                     create_edge_table=lambda: None, input=lambda prompt='': next(answers))
+                     create_edge_table=lambda: None)
         output = io.StringIO()
-        with contextlib.redirect_stdout(output):
+        with contextlib.redirect_stdout(output), patch(
+                'builtins.input', side_effect=lambda prompt='': next(answers)):
             exec(compile(ast.Module(body=main.body, type_ignores=[]), 'CLI-block', 'exec'), scope)
         self.assertIn('Black: 25', output.getvalue())
         self.assertIn('White: 38', output.getvalue())
