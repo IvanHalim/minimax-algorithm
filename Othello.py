@@ -1,5 +1,6 @@
 import os
 import random
+from math import isfinite
 from time import perf_counter
 
 class SearchTimeout(Exception):
@@ -568,6 +569,36 @@ def Iago(depth, time_limit=2.0):
     """Use an approximation of Iago's evaluation function."""
     return alphabeta_iterative(depth, Iago_eval, time_limit=time_limit)
 
+def get_search_settings():
+    """Ask for the AI's maximum depth and time budget per move."""
+    max_allowed = len(ply_boards) - 1
+
+    while True:
+        raw_depth = input(
+            f'Maximum search depth (1-{max_allowed}) [10]: '
+        ).strip()
+        try:
+            depth = int(raw_depth or '10')
+            if 1 <= depth <= max_allowed:
+                break
+        except ValueError:
+            pass
+        print(f'Enter a whole number from 1 to {max_allowed}.')
+
+    while True:
+        raw_time = input(
+            'Seconds per AI move [2], or "none" for unlimited: '
+        ).strip().lower()
+        if raw_time == 'none':
+            return depth, None
+        try:
+            time_limit = float(raw_time or '2')
+            if isfinite(time_limit) and time_limit > 0:
+                return depth, time_limit
+        except ValueError:
+            pass
+        print('Enter a positive number of seconds, or "none".')
+
 def user_input(player, board):
     """Get input move from user"""
     print()
@@ -625,6 +656,7 @@ def lose_message():
 
 if __name__ == '__main__':
 
+    search_depth, time_limit = get_search_settings()
     create_edge_table()
 
     print()
@@ -642,9 +674,9 @@ if __name__ == '__main__':
         player = int(player)
 
     if player == 1:
-        board, score = play(user_input, Iago(10, time_limit=2.0))
+        board, score = play(user_input, Iago(search_depth, time_limit=time_limit))
     else:
-        board, score = play(Iago(10, time_limit=2.0), user_input)
+        board, score = play(Iago(search_depth, time_limit=time_limit), user_input)
 
     black = board.count(BLACK)
     white = board.count(WHITE)
