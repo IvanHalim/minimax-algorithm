@@ -1,5 +1,9 @@
 import os
 import random
+from time import perf_counter
+
+class SearchTimeout(Exception):
+    """Stop the current search iteration when its deadline expires."""
 
 # The outside edge is marked ?, empty squares are ., black is @, and white is o.
 # The black and white pieces represent the two players.
@@ -60,12 +64,17 @@ static_edge_table = [[None, 0, -2000],  # X
                      [700, None, None], # corner
                      [None, 0, -2000]]  # X
 
+ALL_SQUARES = tuple(sorted(
+    (i for i in range(11, 89) if 1 <= i % 10 <= 8),
+    key=lambda sq: SQUARE_WEIGHTS[sq],
+    reverse=True
+))
+
 def squares():
     """
-    List all the valid squares on the board
-    sorted from highest to lowest weight.
+    Return the precomputed squares, highest weight first.
     """
-    return sorted([i for i in range(11, 89) if 1 <= (i % 10) <= 8], key=lambda sq: SQUARE_WEIGHTS[sq], reverse=True)
+    return ALL_SQUARES
 
 def initial_board():
     """Create a new board with the initial black and white positions filled"""
@@ -104,7 +113,7 @@ def is_valid(move):
 
 def opponent(player):
     """Get player's opponent piece."""
-    return BLACK if player is WHITE else WHITE
+    return BLACK if player == WHITE else WHITE
 
 def find_bracket(square, player, board, direction):
     """
@@ -201,18 +210,24 @@ def final_value(player, board):
         return MAX_VALUE
     return diff
 
-def alphabeta(player, board, alpha, beta, depth, evaluate, killer):
+def alphabeta(player, board, alpha, beta, depth, evaluate, killer, deadline=None):
     """
     Alphabeta search, putting killer move first.
     """
+    if deadline is not None and perf_counter() >= deadline:
+        raise SearchTimeout
+        
     # When depth is zero, don't examine possible moves. Just determine the value
     # of this board to the player.
     if depth == 0:
+        if (not any_legal_move(player, board)
+                and not any_legal_move(opponent(player), board)):
+            return final_value(player, board), None
         return evaluate(player, board), None
     
     def value(board, alpha, beta, killer):
         # The value of a board is the opposite of its value to the opponent.
-        val, reply = alphabeta(opponent(player), board, -beta, -alpha, depth-1, evaluate, killer)
+        val, reply = alphabeta(opponent(player), board, -beta, -alpha, depth-1, evaluate, killer, deadline=deadline)
         return -val, reply
     
     # We want to evaluate all the legal moves by considering their implications
@@ -264,15 +279,38 @@ def replace(seq1, seq2):
     seq1[:] = seq2
     return seq1
 
-def alphabeta_iterative(max_depth, evaluate):
-    """Return a strategy that does Alphabeta search with iterative deepening"""
+def alphabeta_iterative(max_depth, evaluate, time_limit=2.0):
+    """Search up to max_depth, with an optional per-move time limit."""
+    if not isinstance(max_depth, int) or not 1 <= max_depth < len(ply_boards):
+        raise ValueError(f"max_depth must be an integer from 1 to {len(ply_boards) - 1}")
+
+    if time_limit is not None and time_limit < 0:
+        raise ValueError("time_limit must be nonnegative, or None")
+
     def strategy(player, board):
-        depth = 1
-        killer = None
-        while depth <= max_depth:
-            killer = alphabeta(player, board, MIN_VALUE, MAX_VALUE, depth, evaluate, killer)[1]
-            depth += 1
-        return killer
+        deadline = None if time_limit is None else perf_counter() + time_limit
+
+        moves = legal_moves(player, board)
+        if not moves:
+            return None
+
+        # Legal fallback if depth 1 cannot finish in time.
+        best_move = moves[0]
+
+        for depth in range(1, max_depth + 1):
+            try:
+                _, move = alphabeta(
+                    player, board, MIN_VALUE, MAX_VALUE,
+                    depth, evaluate, best_move, deadline=deadline
+                )
+            except SearchTimeout:
+                break
+
+            # Update only after the entire iteration finishes.
+            if move is not None:
+                best_move = move
+
+        return best_move
     return strategy
 
 def adj(square):
@@ -290,7 +328,7 @@ def mobility(player, board):
     current, potential = 0, 0
     for sq in squares():
         if board[sq] == EMPTY:
-            if sq in legal_moves(player, board):
+            if is_legal(sq, player, board):
                 current += 1
             elif any(board[neighbor] == opp for neighbor in adj(sq)):
                 potential += 1
@@ -526,9 +564,9 @@ def Iago_eval(player, board):
     score = score1 + score2 + score3
     return score
 
-def Iago(depth):
+def Iago(depth, time_limit=2.0):
     """Use an approximation of Iago's evaluation function."""
-    return alphabeta_iterative(depth, Iago_eval)
+    return alphabeta_iterative(depth, Iago_eval, time_limit=time_limit)
 
 def user_input(player, board):
     """Get input move from user"""
@@ -604,13 +642,13 @@ if __name__ == '__main__':
         player = int(player)
 
     if player == 1:
-        board, score = play(user_input, Iago(4))
+        board, score = play(user_input, Iago(10, time_limit=2.0))
     else:
-        board, score = play(Iago(4), user_input)
+        board, score = play(Iago(10, time_limit=2.0), user_input)
 
-    total = len([sq for sq in squares() if sq != EMPTY])
-    black = int((total + score) / 2)
-    white = total - black
+    black = board.count(BLACK)
+    white = board.count(WHITE)
+    total = black + white
 
     print()
     print(print_board(board))
